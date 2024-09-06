@@ -1,7 +1,6 @@
 import numpy as np
 import Get_SADCI as get #module used to model variables in the governing equation, see Get_SADCI.py
 import matplotlib.pyplot as plt
-#import temporal_fractional_hab as tfh (not used in project)
 
 #set length of time simulated (t_tot), time step (dt) and latitude band size (band_size)
 #also host star mass (m_star) and luminosity (L_star)
