@@ -1,5 +1,5 @@
 import numpy as np
-import Get_SADCI as get
+import Get_SADCI as get #module used to model varibale in the governing equations
 import matplotlib.pyplot as plt
 #import temporal_fractional_hab as tfh (not used in project)
 
@@ -20,22 +20,25 @@ for i in range(band_no):
     lam[i]=la[-i-1]
 
 #initial variables and units:
-#del_0: obliquity, in rad
+#del_0: obliquity, in rad (only relevant for 3-2 resonance
 #a: semi-major axis, in AU
 #period of rotation, in hrs
+
+#11 for tidally locked
+#central difference method for integration
     
-def central_T11(initial_T, a, e, phi_ini, f_o, period, m_star, L): #all central
+def central_T11(initial_T, a, e, phi_ini, f_o, period, m_star, L): 
     T=np.zeros((band_no,tstep_no))
     omega_p=(2*np.pi)/(period*60*60)
     T[:,0]=initial_T #initial conditions
-    for j in range (0,tstep_no-1):
+    for j in range (0,tstep_no-1): #evolve temperature distrubtion 
         T[0,j+1]=(dt/get.C(T[0,j],f_o))*(get.S_11(lam[0],j*dt,a,e,phi_ini,m_star,L)*(1-get.A(T[0,j]))+
         get.D(omega_p)*(T[2,j]-T[0,j])/(2*(band_size_rad**2))-
         get.I(T[0,j]))+T[0,j]
         T[-1,j+1]=(dt/get.C(T[-1,j],f_o))*(get.S_11(lam[-1],j*dt,a,e,phi_ini,m_star,L)*(1-get.A(T[-1,j]))+
         get.D(omega_p)*(T[-3,j]-T[-1,j])/(2*(band_size_rad**2))-
         get.I(T[-1,j]))+T[-1,j]
-        for i in range (1,band_no-1):
+        for i in range (1,band_no-1): #temperature distribution in one time step
             T[i,j+1]=(dt/get.C(T[i,j],f_o))*(get.S_11(lam[i],j*dt,a,e,phi_ini,m_star,L)*(1-get.A(T[i,j]))-
             get.D(omega_p)*np.tan(lam[i])*(T[i-1,j]-T[i+1,j])/(2*band_size_rad)+
             get.D(omega_p)*(T[i+1,j]-2*T[i,j]+T[i-1,j])/band_size_rad**2-
