@@ -1,9 +1,10 @@
 import numpy as np
-import Get_SADCI as get #module used to model varibale in the governing equations
+import Get_SADCI as get #module used to model variables in the governing equation, see Get_SADCI.py
 import matplotlib.pyplot as plt
 #import temporal_fractional_hab as tfh (not used in project)
 
 # set length of time simulated, time step and latitude band thickness, and also host star mass and luminosity
+#star characteristics taken from observed data on Earth and Proxima Centauri b
 L_star=0.00155*3.84*(10**26)
 m_star=0.12*1.9885*(10**30)
 t_tot=150*60*60*24*365 #year
@@ -20,11 +21,16 @@ for i in range(band_no):
     lam[i]=la[-i-1]
 
 #initial variables and units:
-#del_0: obliquity, in rad (only relevant for 3-2 resonance
+#initial_T: inital temperature, set to 300 K 
 #a: semi-major axis, in AU
-#period of rotation, in hrs
+#e: eccentricity
+#phi_ini: inital phase in orbit, represent inital position in orbit (found to have little effect on results)
+#f_o: ocean fraction
+#period: period of rotation, in hrs
+#del_0: obliquity, in rad (only relevant for 3-2 resonance)
 
-#11 for tidally locked
+#Research found that Proxima Centauri b can have 1-1 (tidally locked) or 3-2 spin-orbit resonance
+#11 for tidally locked, 32 for 3-2 resonance
 #central difference method for integration
     
 def central_T11(initial_T, a, e, phi_ini, f_o, period, m_star, L): 
@@ -51,7 +57,8 @@ def central_T11(initial_T, a, e, phi_ini, f_o, period, m_star, L):
     get.I(T[-1,tstep_no-2]))+T[-1,tstep_no-2]
     return T
 
-def central_T32(initial_T, del_0, a, e, phi_ini, f_o, period, m_star, L): #all central
+#3-2 model can also be adapted to model Earth
+def central_T32(initial_T, del_0, a, e, phi_ini, f_o, period, m_star, L): 
     T=np.zeros((band_no,tstep_no), dtype='float64')
     omega_p=(2*np.pi)/(period*60*60)
     T[:,0]=initial_T #initial conditions
